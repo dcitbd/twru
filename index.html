@@ -62,7 +62,7 @@ textarea{min-height:100px;resize:vertical}
 .check{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:13px}
 .check input{width:18px;height:18px;margin-top:2px;accent-color:var(--green);flex:0 0 auto}
 .check label{font-weight:500;line-height:1.5}
-.notice{padding:14px 16px;border-radius:14px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.15);color:#bfeaf2;font-size:13px;line-height:1.6}
+.privacy{padding:18px 20px;border-radius:16px;background:rgba(255,255,255,.035);border:1px solid var(--line);color:#cbd7e5;font-size:13px;line-height:1.75;margin-top:16px}.privacy strong{color:#fff}.privacy ul{margin:8px 0 0 20px;padding:0}.honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}.notice{padding:14px 16px;border-radius:14px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.15);color:#bfeaf2;font-size:13px;line-height:1.6}
 .submitbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:24px}
 button{
   border:0;border-radius:15px;padding:14px 22px;font-weight:800;font-size:15px;cursor:pointer;color:#fff;
@@ -183,6 +183,20 @@ button:disabled{opacity:.55;cursor:not-allowed;transform:none}
           <div class="check" style="margin-top:10px"><input type="checkbox" id="consent" required><label for="consent">আমি আমার আবেদন সংক্রান্ত যোগাযোগের জন্য মোবাইল/WhatsApp/ই-মেইলে যোগাযোগের সম্মতি দিচ্ছি। <span class="req">*</span></label></div>
         </section>
 
+        <div class="privacy" id="privacyNotice">
+          <strong>🔐 Privacy & Data Use</strong>
+          <ul>
+            <li>এই আবেদন ফর্মটি Techno World BD ও Green City Developments BD-এর নিয়োগ প্রক্রিয়ার জন্য ব্যবহার করা হচ্ছে।</li>
+            <li>নাম, যোগাযোগের তথ্য, NID, ছবি, CV ও প্রয়োজনীয় অভিজ্ঞতার নথি শুধুমাত্র আবেদন যাচাই ও নিয়োগ প্রক্রিয়ার প্রয়োজনে সংগ্রহ করা হবে।</li>
+            <li>আপনার তথ্য অনুমোদিত কোম্পানি/HR ব্যবহারের জন্য Google Drive ও Google Sheets-এ সংরক্ষিত হতে পারে।</li>
+            <li>কোনো পেমেন্ট, ব্যাংক/কার্ডের তথ্য বা পাসওয়ার্ড এই ফর্মে চাওয়া হয় না।</li>
+            <li>তথ্য ব্যবহারের বিষয়ে প্রশ্ন থাকলে <a href="mailto:jainal.dcitbd@gmail.com" style="color:#65c8ff">jainal.dcitbd@gmail.com</a> অথবা <a href="https://wa.me/8801581703822" target="_blank" rel="noopener" style="color:#65c8ff">01581703822</a>-এ যোগাযোগ করুন।</li>
+          </ul>
+        </div>
+        <div class="honeypot" aria-hidden="true">
+          <label>Website <input name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
+
         <div class="submitbar">
           <div class="contact">যোগাযোগ: <a href="https://wa.me/8801581703822" target="_blank" rel="noopener">01581703822 (WhatsApp)</a></div>
           <button id="submitBtn" type="submit">🚀 Submit Application</button>
@@ -197,6 +211,10 @@ button:disabled{opacity:.55;cursor:not-allowed;transform:none}
       <button type="button" onclick="location.reload()">আরেকটি আবেদন</button>
     </div>
   </main>
+  <footer style="text-align:center;color:#8193aa;font-size:12px;padding:0 0 34px;line-height:1.8">
+    <div><strong style="color:#cbd7e5">Official Recruitment Application Portal</strong></div>
+    Techno World BD • Green City Developments BD • Contact: 01581703822 • jainal.dcitbd@gmail.com
+  </footer>
 </div>
 <div id="toast" class="toast"></div>
 
@@ -294,6 +312,7 @@ async function submitApplication(){
 
   try{
     const fd=new FormData(form);
+    if(String(fd.get("website")||"").trim() !== ""){ toastMsg("অটোমেটেড আবেদন শনাক্ত হয়েছে।","err"); return; }
     const data={};
     for(const [k,v] of fd.entries()){
       if(typeof v === "string") data[k]=v;
@@ -301,6 +320,7 @@ async function submitApplication(){
     data.declaration=true; data.consent=true;
     data.submittedAt=new Date().toISOString();
     data.userAgent=navigator.userAgent;
+    data.sourcePage=location.href;
     data.applicationId="APP-"+Date.now()+"-"+Math.random().toString(36).slice(2,7).toUpperCase();
 
     const fileInputs=[...form.querySelectorAll('input[type="file"]')];
